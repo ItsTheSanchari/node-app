@@ -11,7 +11,10 @@ router.get('/',(req,res,next)=>{
     console.log('product list',admin.product)
     // res.sendFile(path.join(rootDir,'views','shop.html'))
     res.status(200).render('shop',{
-        products : admin.product
+        products : admin.product,
+        pageTitle:'Shopping Page',
+        path:'/'
+
     })
 })
 module.exports = router

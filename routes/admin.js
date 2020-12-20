@@ -9,12 +9,14 @@ router.get('/add-product',(req,res,next)=>{
     // res.send('<html><body><form action="/admin/product" method="POST"><input type="text" name="data"></input><button type="submit">submit</button></form></body></html>')
     // res.sendFile(path.join(rootDir,'views','add-product.html'))
     res.status(200).render('add-product',{
-        pageTitle : 'Add Product'
+        pageTitle : 'Add Product',
+        path:'admin/add-product'
     })
 })
 router.post('/add-product',(req,res,next)=>{
     this.product.push({
-        title: req.body.title
+        title: req.body.title,
+        path:'admin/add-product'
     })
     res.redirect('/')
 })
