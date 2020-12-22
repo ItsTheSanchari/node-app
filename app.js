@@ -2,7 +2,7 @@ const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const adminData = require('./routes/admin')
+const adminRoute = require('./routes/admin')
 const shopRoutes = require('./routes/shop')
 const unhandled = require('./routes/unhandled')
 
@@ -14,11 +14,8 @@ app.use(bodyParser.urlencoded({
     extended : false
 }))
 app.use(express.static(path.join(__dirname,'public')))
-app.use('/admin',adminData.routes)
+app.use('/admin',adminRoute)
 app.use(shopRoutes)
 app.use(unhandled)
-
-
-
 
 app.listen(3000)
