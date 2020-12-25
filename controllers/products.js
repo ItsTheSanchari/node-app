@@ -1,4 +1,5 @@
-const product = []
+const productModel = require('../models/prouct')
+let productList;
 exports.getAddProductPage = (req,res,next) => {
     res.status(200).render('add-product',{
         pageTitle : 'Add Product',
@@ -6,15 +7,16 @@ exports.getAddProductPage = (req,res,next) => {
     })
 }
 exports.addProduct = (req,res,next) => {
-    product.push({
-        title : req.body.title,
-        path: 'admin/add-product'
-    })
-    res.redirect('/')
+    const product = new productModel({
+        title:req.body.title,
+    });
+    product.saveProduct();
+    res.redirect('/');
 }
 exports.getProductList = (req,res,next) => {
+    const products = productModel.fetchAllProducts()
     res.status(200).render('shop',{
-        products : product,
+        products : products,
         pageTitle:'Shopping Page',
         path:'/'
 
