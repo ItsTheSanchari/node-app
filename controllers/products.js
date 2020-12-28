@@ -14,11 +14,13 @@ exports.addProduct = (req,res,next) => {
     res.redirect('/');
 }
 exports.getProductList = (req,res,next) => {
-    const products = productModel.fetchAllProducts()
-    res.status(200).render('shop',{
-        products : products,
-        pageTitle:'Shopping Page',
-        path:'/'
-
+    productModel.fetchAllProducts((products)=>{
+        res.status(200).render('shop',{
+            products : products,
+            pageTitle:'Shopping Page',
+            path:'/'
+    
+        })
     })
+    
 }
