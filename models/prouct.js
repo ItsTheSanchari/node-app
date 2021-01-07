@@ -1,46 +1,57 @@
 const path = require('path')
 const fs = require('fs')
 const products = [];
-
+const p = path.join(
+    path.dirname(require.main.filename),
+    'data',
+    'products.json'
+    )
+//helper function
+const getProductsFromFile = cb => {
+    
+    fs.readFile(p,(err,content)=>{
+        if(err) {
+            cb([])
+        } else {
+            cb(JSON.parse(content))
+        }
+        
+    })
+}
 module.exports = class Product {
     constructor(details) {
         this.title = details.title;
         this.path = details.path
+        this.description = details.description
     }
-
+    
     saveProduct() {
-        // products.push(this);
-        const p = path.join(
-            path.dirname(require.main.filename),
-            'data',
-            'products.json'
-            )
-        fs.readFile(p,(err,content) => {
-            let products = []
-            if(!err) {
-                products = JSON.parse(content)
-            }
+        //using arrow function so this doesnt lose its context
+        getProductsFromFile((products)=>{
+            this.id = products.length+1 
             products.push(this)
             fs.writeFile(p,JSON.stringify(products),(err)=>{
-                console.log(err)
+                if(err) console.log('error',err)
+                
             })
         })
+            
 
     }
 
     static fetchAllProducts(cb) {
-        let data = []
-        const p = path.join(
-            path.dirname(require.main.filename),
-            'data',
-            'products.json'
-            )
-        fs.readFile(p,(err,content)=>{
-            if(err) {
-                cb([])
-            } 
-            cb(JSON.parse(content))
-        })
+       getProductsFromFile(cb)
         
+    }
+    static deleteProduct() {
+        getProductsFromFile((products)=>{
+            
+        })
+    }
+    static getProductById(id,cb) {
+        getProductsFromFile(products => {
+            const fetchedProduct = products.find(product => product.id == id)
+            cb(fetchedProduct)
+        })
     }
 }

@@ -60,6 +60,9 @@ main {
 
 .card {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    width: 300px;
+    height: 258px;
+    margin-block-end: 15px;
 }
 
 .card__header,

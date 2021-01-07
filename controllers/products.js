@@ -9,8 +9,12 @@ exports.getAddProductPage = (req,res,next) => {
 exports.addProduct = (req,res,next) => {
     const product = new productModel({
         title:req.body.title,
+        imageUrl:req.body.imageUrl,
+        price:req.body.price,
+        description:req.body.description,
+        
     });
-    product.saveProduct();
+    product.saveProduct();             
     res.redirect('/');
 }
 exports.getProductList = (req,res,next) => {
@@ -23,4 +27,15 @@ exports.getProductList = (req,res,next) => {
         })
     })
     
+}
+exports.getProductDetails = (req,res,next) => {
+    let productId = req.params.productId
+    productModel.getProductById(productId,(fetchedProduct)=>{
+        res.status(200).render('product-details',{
+            product : fetchedProduct,
+            pageTitle: 'Product Details',
+            path:'/product-details',
+            
+        })
+    })
 }
