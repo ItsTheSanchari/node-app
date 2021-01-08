@@ -8,4 +8,5 @@ const product = []
 router.get('/add-product',productController.getAddProductPage)
 router.post('/add-product',productController.addProduct)
 router.get('/product-details/:productId',productController.getProductDetails)
+router.get('/delete/product/:productId',productController.removeProduct)
 module.exports = router
