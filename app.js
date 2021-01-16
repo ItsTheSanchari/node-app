@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const adminRoute = require('./routes/admin')
 const shopRoutes = require('./routes/shop')
+const cartRoutes = require('./routes/cart')
 const unhandled = require('./routes/unhandled')
 
 

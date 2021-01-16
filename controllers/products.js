@@ -51,6 +51,8 @@ exports.removeProduct = (req, res, next) => {
 }
 exports.addProductToCart = (req,res,next) => {
     let productId = req.body.productId
-    const Cart = new Cart(productId)
+    const Cart = new cartModel()
+    cartModel.addProductToCart(productId)
+    res.redirect('/')
 
 }
