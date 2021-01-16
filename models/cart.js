@@ -38,8 +38,14 @@ module.exports = class Cart {
         
         
     }
-    static getCartProducts() {
-
+    static getCartProducts(cb) {
+        fs.readFile(p,(err,content)=> {
+            if(err) {
+                cb([])
+            } else {
+                cb(JSON.parse(content))
+            }
+        })
     }
     static getTotalPrice() {
 

@@ -54,5 +54,14 @@ exports.addProductToCart = (req,res,next) => {
     const Cart = new cartModel()
     cartModel.addProductToCart(productId)
     res.redirect('/')
-
 }
+exports.getAllCartData = (req,res,next) => {
+    const Cart = new cartModel()
+    cartModel.getCartProducts(cartData => {
+        res.status(200).render('cart',{
+            products: cartData,
+            pageTitle: 'Cart Page',
+            path: '/'
+        })
+    })
+} 

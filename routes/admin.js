@@ -4,7 +4,7 @@ const router = express.Router();
 const productController = require('../controllers/products')
 
 const product = []
-
+router.get('/cart',productController.getAllCartData)
 router.get('/add-product',productController.getAddProductPage)
 router.post('/add-product',productController.addProduct)
 router.get('/product-details/:productId',productController.getProductDetails)
