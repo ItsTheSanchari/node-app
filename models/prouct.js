@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const db = require('./../utils/database')
 const products = [];
 const p = path.join(
     path.dirname(require.main.filename),
@@ -26,21 +27,28 @@ module.exports = class Product {
     }
     
     saveProduct() {
+        return db.execute('INSERT INTO products (title,price,description) VALUES (?,?,?)',[
+            this.title,
+            300,
+            this.description
+        ])
         //using arrow function so this doesnt lose its context
-        getProductsFromFile((products)=>{
-            this.id = products.length+1 
-            products.push(this)
-            fs.writeFile(p,JSON.stringify(products),(err)=>{
-                if(err) console.log('error',err)
+
+        // getProductsFromFile((products)=>{
+        //     this.id = products.length+1 
+        //     products.push(this)
+        //     fs.writeFile(p,JSON.stringify(products),(err)=>{
+        //         if(err) console.log('error',err)
                 
-            })
-        })
+        //     })
+        // })
             
 
     }
 
-    static fetchAllProducts(cb) {
-       getProductsFromFile(cb)
+    static fetchAllProducts() {
+    //    getProductsFromFile(cb)
+    return db.execute('SELECT * FROM products')
         
     }
     static deleteProduct() {
@@ -48,11 +56,12 @@ module.exports = class Product {
             
         })
     }
-    static getProductById(id,cb) {
-        getProductsFromFile(products => {
-            const fetchedProduct = products.find(product => product.id == id)
-            cb(fetchedProduct)
-        })
+    static getProductById(id) {
+        return db.execute('SELECT * FROM products where products.id=?',[id])
+        // getProductsFromFile(products => {
+        //     const fetchedProduct = products.find(product => product.id == id)
+        //     cb(fetchedProduct)
+        // })
     }
     static removeProductById(id,cb) {
         getProductsFromFile(fetchedProduct => {
