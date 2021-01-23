@@ -16,7 +16,7 @@ module.exports = class Cart {
                    if(!prodErr) {
                       let products = JSON.parse(allProducts)
                       let toBeAdded = products.find(eachProduct => eachProduct.id == id)
-                      console.log('toBeAdded',existingItemIndex);
+                      console.log('index',existingItemIndex);
                       let Newcart = [...cart]
                           if(existingItemIndex == -1) {
                             let productObj = {...toBeAdded}
@@ -28,9 +28,11 @@ module.exports = class Cart {
                               let updatedProduct = cart[existingItemIndex];
                               updatedProduct.quantity = updatedProduct.quantity+1;
                                cart[existingItemIndex] = updatedProduct
-                               
                           }
-                          fs.writeFile(p,JSON.stringify(cart))
+                          console.log('cart data',cart)
+                          fs.writeFile(p,JSON.stringify(cart),(err)=>{
+                            if(err) console.log('error',err)
+                        })
                    }
                         
                })
@@ -38,7 +40,7 @@ module.exports = class Cart {
         
         
     }
-    static getCartProducts(cb) {
+    static getCartProducts() {
         fs.readFile(p,(err,content)=> {
             if(err) {
                 cb([])
