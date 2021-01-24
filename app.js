@@ -11,6 +11,8 @@ const unhandled = require('./routes/unhandled')
 //models
 const Product = require('./models/prouct')
 const User = require('./models/User')
+const Cart = require('./models/Cart')
+const CartItem = require('./models/Cart-Item')
 
 const app = express()
 app.set('view engine','ejs')
@@ -37,8 +39,37 @@ Product.belongsTo(User,{
     onDelete:'CASCADE'
 })
 User.hasMany(Product)
+// User cart relationship
+User.hasOne(Cart)
+Cart.belongsTo(User)
+
+
+// Cart and Product relationship
+Cart.belongsToMany(Product, {
+    through: CartItem
+})
+Product.belongsToMany(Cart, {
+    through: CartItem
+})
+
 sequelize.sync().then((result)=>{
-   app.listen(3000)
+    User.findByPk(1).then((user) => {
+        if(!user) {
+            User.create({
+                name:'sanchari',
+                email:'sanchari678@gmail.com'
+            })
+        } 
+        return user;
+    })
+    .then((user) => {
+        app.listen(3000)
+        
+    })
+    .catch((err) => {
+        console.log('error while creating dummy user',err)
+    })
+   
 }).catch((err)=>{
     console.log('error occurred while tring to sync',err)
 })
