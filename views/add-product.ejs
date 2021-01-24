@@ -9,25 +9,27 @@
     <%-include('includes/navigation.ejs')%>
 
     <main>
-        <form class="product-form" action="/admin/add-product" method="POST">
+        <form class="product-form" action="<%=type === 'edit' ? '/admin/product-details/edit/submit' : '/admin/add-product' %>" method="POST">
             <div class="form-control">
                 <label for="title">Title</label>
-                <input type="text" name="title" id="title">
+                <input type="text" name="title" id="title" value="<%=type === 'edit' ?  product.title : ''%>">
             </div>
             <div class="form-control">
                 <label for="imageUrl">Image URL</label>
-                <input type="text" name="imageUrl" id="imageUrl">
+                <input type="text" name="imageUrl" id="imageUrl" value="<%=type === 'edit' ? product.imageUrl: ''%>">
             </div>
             <div class="form-control">
                 <label for="price">Price</label>
-                <input type="number" name="price" id="price" step="0.01">
+                <input type="number" name="price" id="price" step="0.01" value="<%=type === 'edit' ? product.price : ''%>">
             </div>
             <div class="form-control">
                 <label for="description">Description</label>
-                <textarea name="description" id="description" rows="5"></textarea>
+                <textarea name="description" id="description" rows="5" value="<%=type === 'edit' ? product.description :''%>"></textarea>
             </div>
-
-            <button class="btn" type="submit">Add Product</button>
+            <%if(type == 'edit'){%>
+            <input type="hidden" name="productId" value="<%=product.id%>">
+            <%}%>
+            <button class="btn" type="submit"><%=type === 'edit' ? 'Edit Product' : 'Add Product' %></button>
         </form>
     </main>
 <%-include('includes/end.ejs')%>
