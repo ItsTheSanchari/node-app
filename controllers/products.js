@@ -158,4 +158,33 @@ exports.editProductDb = (req,res,next) =>{
     }).catch((err) => {
         console.log('error while updating',err)
     })
+}
+exports.removeCartProduct = (req,res,next) => {
+    const productId = req.body.productId
+    const cartId = req.body.cartId
+
+    const cartItems = CartItems.findAll({
+        where : {
+            productId : productId,
+            cartId : cartId
+        }
+    }).then((cartItems) => {
+        let currentCartItem = cartItems[0]
+        if(currentCartItem.quantity > 1) {
+            let newQuantity = currentCartItem.quantity-1
+            return currentCartItem.update({
+                quantity : newQuantity
+            })
+        } else {
+            return currentCartItem.destroy()
+        }
+
+
+    }).then((cartItem) => {
+       res.redirect('/admin/cart')
+    }).catch((err)=>{
+
+    })
+    
+    
 } 
