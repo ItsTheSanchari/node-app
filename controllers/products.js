@@ -81,6 +81,9 @@ exports.addProductToCart = (req, res, next) => {
           if(products.length > 0) {
             fetchedProduct = products[0]
           }
+          if(fetchedProduct){
+              quantity = fetchedProduct.cartItem.quantity+1
+          }
             return product.findByPk(productId).then((actualproduct)=>{
                 return fetchedCart.addProduct(actualproduct,{
                     through : {
