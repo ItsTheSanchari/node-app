@@ -13,6 +13,8 @@ const Product = require('./models/prouct')
 const User = require('./models/User')
 const Cart = require('./models/Cart')
 const CartItem = require('./models/Cart-Item')
+const Order = require('./models/Order')
+const OrderItem = require('./models/Order-Items')
 
 const app = express()
 app.set('view engine','ejs')
@@ -43,7 +45,6 @@ User.hasMany(Product)
 User.hasOne(Cart)
 Cart.belongsTo(User)
 
-
 // Cart and Product relationship
 Cart.belongsToMany(Product, {
     through: CartItem
@@ -51,7 +52,13 @@ Cart.belongsToMany(Product, {
 Product.belongsToMany(Cart, {
     through: CartItem
 })
+//user order relationship
+User.hasMany(Order)
+Order.belongsTo(User)
 
+Order.belongsToMany(Product,{
+    through : OrderItem
+})
 sequelize.sync().then((result)=>{
     User.findByPk(1).then((user) => {
         if(!user) {
