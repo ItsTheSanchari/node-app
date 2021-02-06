@@ -25,7 +25,6 @@ exports.addProduct = (req, res, next) => {
 }
 exports.getProductList = (req, res, next) => {
     Product.getProductList().then(products => {
-        console.log('111111111111111',products)
         res.status(200).render('shop',{
             products:products,
             pageTitle:'Shopping Page',
@@ -35,23 +34,21 @@ exports.getProductList = (req, res, next) => {
         console.log('error',error)
     })
 }
-// exports.getProductDetails = (req, res, next) => {
-//     let productId = req.params.productId
-//     // product.findByPk(productId)
-//     req.user.getProducts({
-//         where :{
-//             id:productId
-//         }
-//     }).then((fetchedProducts) => {
-//         res.status(200).render('product-details', {
-//                     product: fetchedProducts[0],
-//                     pageTitle: 'Product Details',
-//                     path: '/product-details',
-//                 })
-//     }).catch((err)=>{
-//         console.log('error while fetching a product')
-//     })
-// }
+exports.getProductDetails = (req, res, next) => {
+    let productId = req.params.productId
+    Product.getProductDetails(productId)
+    .then((result) => {
+       res.status(200).render('product-details',{
+           product:result,
+           pageTitle:'Product details',
+           path:'/admin/product-details'
+       })
+    })
+    .catch(error => {
+        console.log('error while getting details',error)
+    })
+  
+}
 // exports.removeProduct = (req, res, next) => {
 //     let productId = req.params.productId
 //     product.findByPk(productId).then((productFound) =>{
