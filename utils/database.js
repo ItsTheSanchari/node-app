@@ -1,21 +1,8 @@
-const Sequelize = require('sequelize')
-const sequelize = new Sequelize(
-    'node_complete',
-    'root',
-    'sanchari1234',{
-        dialect : 'mysql',
-        host: 'localhost'
-    }
 
-)
-
-module.exports = sequelize
-// const mysql = require('mysql2')
-// const pool = mysql.createConnection({
-//     host : 'localhost',
-//     user : 'root',
-//     database: 'node_complete',
-//     password: 'sanchari1234'
-
-// })
-// module.exports = pool.promise()
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://thesanchari:sanchari1234@cluster0.r5sgi.mongodb.net/<test>?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
+// client.connect(err => {
+//   const collection = client.db("test").collection("devices");
+// });
+module.exports = client
