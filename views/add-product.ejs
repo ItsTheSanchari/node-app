@@ -28,7 +28,7 @@
                 <textarea name="description" id="description" rows="5" value="<%=type === 'edit' ? product.description :''%>"></textarea>
             </div>
             <%if(type == 'edit'){%>
-            <input type="hidden" name="productId" value="<%=product.id%>">
+            <input type="hidden" name="productId" value="<%=product._id%>">
             <%}%>
             <button class="btn" type="submit"><%=type === 'edit' ? 'Edit Product' : 'Add Product' %></button>
         </form>

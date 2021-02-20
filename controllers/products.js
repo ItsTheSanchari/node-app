@@ -17,7 +17,6 @@ exports.addProduct = (req, res, next) => {
     const description = req.body.description
     const product = new Product(title,price,description,imageUrl)
     product.save().then((result) => {
-        console.log('product created',result)
         res.redirect('/')
     }).catch(error => {
         console.log('error',error)
@@ -48,6 +47,35 @@ exports.getProductDetails = (req, res, next) => {
         console.log('error while getting details',error)
     })
   
+}
+
+exports.editProduct = (req, res, next) => {
+    let productId = req.body.productId
+    Product.getProductDetails(productId).then((result)=>{
+        console.log('result',result)
+        res.status(200).render('add-product', {
+                        pageTitle: 'Edit Product',
+                        path: 'admin/product-details/edit',
+                        type: 'edit',
+                        product:result
+                    })
+    }).catch(error => {
+        console.log('error while getting details',error)
+    })
+}
+
+exports.editProductDb = (req, res, next) => {
+    let _id = req.body.productId
+    let updatedTitle = req.body.title
+    let updatedPrice = req.body.price
+    let updatedDescription = req.body.description
+    let updatedImgUrl = req.body.imgUrl
+    const product = new Product(updatedTitle,updatedPrice,updatedDescription,updatedImgUrl,_id)
+    product.save().then(() => {
+        res.redirect('/')
+    }).catch(error => {
+
+    })
 }
 // exports.removeProduct = (req, res, next) => {
 //     let productId = req.params.productId

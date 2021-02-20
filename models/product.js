@@ -1,16 +1,33 @@
 const client = require('../utils/database')
 const mongoDb = require('mongodb')
 class Product {
-    constructor(title,price,description,imgUrl) {
+    constructor(title,price,description,imgUrl,id) {
         this.title = title
         this.price = price
         this.description = description
         this.imgUrl = imgUrl
+        this._id = id
     }
     save()  {
-        return client.db('shop').collection('products').insertOne(this)
-        .then(result => {
-            console.log('result',result)
+        let dbOperation;
+        if(this._id) {
+            dbOperation = client.db('shop').collection('products').updateOne(
+                {_id :new mongoDb.ObjectId(this._id)},
+                {
+                    $set: 
+                    {
+                        title : this.title,
+                        price: this.price,
+                        description: this.description,
+                        imgUrl:this.imgUrl,
+                    }
+                }
+                )
+        } else {
+            dbOperation = client.db('shop').collection('products').insertOne(this)
+        }
+        return dbOperation.then(result => {
+            
         })
         .catch(error => {
             console.log('error',error)
