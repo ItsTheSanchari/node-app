@@ -16,7 +16,7 @@ exports.addProduct = (req, res, next) => {
     const price = req.body.price
     const description = req.body.description
     const product = new Product(title,price,description,imageUrl)
-    product.save().then((result) => {
+    Product.save().then((result) => {
         console.log('product created',result)
         res.redirect('/')
     }).catch(error => {
@@ -119,19 +119,20 @@ exports.getProductDetails = (req, res, next) => {
 //     })
 //     .catch(err => console.log(err));
 // }
-// exports.editProduct = (req,res,next) => {
-//     let productId = req.body.productId
-//     product.findByPk(productId).then((fetchedProduct) => {
-//         res.status(200).render('add-product', {
-//             pageTitle: 'Edit Product',
-//             path: 'admin/product-details/edit',
-//             type: 'edit',
-//             product:fetchedProduct
-//         })
-//     }).catch((err) => {
-//         console.log('edit product details error',err)
-//     })
-// }
+exports.editProduct = (req,res,next) => {
+    let productId = req.body.productId
+    Product.getProductDetails(productId).then((fetchedProduct) => {
+        console.log('fetchedProduct',fetchedProduct)
+        res.status(200).render('add-product', {
+            pageTitle: 'Edit Product',
+            path: 'admin/product-details/edit',
+            type: 'edit',
+            product:fetchedProduct
+        })
+    }).catch((err) => {
+        console.log('edit product details error',err)
+    })
+}
 // exports.editProductDb = (req,res,next) =>{
 //     const title = req.body.title
 //     const imageUrl = req.body.imageUrl
