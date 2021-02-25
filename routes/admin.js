@@ -12,7 +12,7 @@ router.get('/products',productController.getProductList)
 router.post('/product-details/edit',productController.editProduct)
 // router.post('/product-details/edit/submit',productController.editProductDb)
 
-// router.get('/delete/product/:productId',productController.removeProduct)
+router.get('/delete/product/:productId',productController.removeProduct)
 
 //cart routes
 

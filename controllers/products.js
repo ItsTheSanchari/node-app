@@ -16,7 +16,7 @@ exports.addProduct = (req, res, next) => {
     const price = req.body.price
     const description = req.body.description
     const product = new Product(title,price,description,imageUrl)
-    Product.save().then((result) => {
+    product.save().then((result) => {
         console.log('product created',result)
         res.redirect('/')
     }).catch(error => {
@@ -78,18 +78,15 @@ exports.editProductDb = (req, res, next) => {
 
     })
 }
-// exports.removeProduct = (req, res, next) => {
-//     let productId = req.params.productId
-//     product.findByPk(productId).then((productFound) =>{
-//         return productFound.destroy()
-//     }).then((result)=>{
-//         console.log('destroyed',result)
-//         res.status(200).redirect('/')
-//     })
-//     .catch((err) =>{
-//         console.log('error occurred while deleting a product',err)
-//     })
-// }
+exports.removeProduct = (req, res, next) => {
+    let productId = req.params.productId
+    Product.deleteById(productId).then(()=>{
+        res.redirect('/')
+    }).catch(error => {
+        console.log('error occured while deleting....')
+    })
+   
+}
 // exports.addProductToCart = (req, res, next) => {
 //     let productId = req.body.productId
 //     let fetchedCart;

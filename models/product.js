@@ -6,9 +6,9 @@ class Product {
         this.price = price
         this.description = description
         this.imgUrl = imgUrl
-        this._id = id
+        this._id = id ? new mongoDb.ObjectId(id) : null
     }
-    static save(productId = null) {
+    save(productId = null) {
         if (productId) {
             return client.db('shop').collection('products').updateOne({
                 _id : new mongoDb.ObjectId(productId)
@@ -25,7 +25,13 @@ class Product {
                 console.log('error while updating a product',err)
             })
         } else {
-            return client.db('shop').collection('products').insertOne(this)
+            console.log('voila')
+            return client.db('shop').collection('products').insertOne({
+                title: this.title,
+                proce:this.price,
+                description:this.description,
+                imgUrl:this.imgUrl
+            })
                 .then(result => {
                     console.log('result', result)
                 })
@@ -56,6 +62,15 @@ class Product {
         })
         .catch(error => {
             console.log('error while fetching a product',error)
+        })
+    }
+    static deleteById(productId) {
+        return client.db('shop').collection('products').deleteOne({
+            _id:new mongoDb.ObjectId(productId)
+        }).then(()=>{
+            console.log('deleted')
+        }).catch(error => {
+            console.log('error occurred while deleting',error)
         })
     }
 }
