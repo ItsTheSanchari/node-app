@@ -35,21 +35,61 @@ class User {
         })
     }
     addToCart(product) {
-
+        console.log('product',product)
         const cartProductIndex = this.cart.items.findIndex((item) => {
-            return item.productId.toString() == product._id.toString() 
+            return item.productId.toString() === product._id.toString() 
         })
-        const updatedCartItems = [...this.cart.items]    
+        const updatedCartItems = [...this.cart.items]   
         if(cartProductIndex > -1) {
             updatedCartItems[cartProductIndex].quantity = this.cart.items[cartProductIndex].quantity +1;
         } else {
-            updatedCartItems.push({productId:new mongoDb.ObjectId(product._id),quantity:quantity})
+            updatedCartItems.push({productId:new mongoDb.ObjectId(product._id),quantity:1})
         }
         const updatedCart = {
             items: updatedCartItems
         }
-        console.log('updatedCart',updatedCart)
-     
+        return client.db('shop').collection('User').updateOne(
+            {_id : this._id},
+            {$set: {cart:updatedCart}}
+            )
+    }
+    getAllCartData() {
+        console.log('all data',this.cart)
+        let cartProductIds = this.cart.items.map(eachItem => {
+            return new mongoDb.ObjectId(eachItem.productId)
+        })
+       console.log('ids',cartProductIds)
+       return client.db('shop').collection('products').find({ _id: { $in: cartProductIds } })
+       .toArray()
+       .then((products)=>{
+           console.log('products',products)
+           return products.map(eachProduct => {
+               return {
+                   ...eachProduct,quantity:this.cart.items.find(eachItem => {
+                    return eachItem.productId.toString() === eachProduct._id.toString()
+                   }).quantity
+               }
+           })
+       })
+       .catch((error) => {
+           console.log('error',error)
+       })
+    }
+    removeCartProduct(productId) {
+        let updatedCartItems = [...this.cart.items]
+        let modifiedCartItems = []
+        updatedCartItems.map(eachItem => {
+            if(eachItem.productId.toString() === productId.toString()) {
+                    eachItem.quantity = eachItem.quantity-1
+            }
+        })
+        modifiedCartItems =  updatedCartItems.filter(eachItem => {
+            return parseInt(eachItem.quantity)!=0
+        })
+        const updatedCart = {
+            items: modifiedCartItems
+        }
+        console.log('cart',updatedCart)
         return client.db('shop').collection('User').updateOne(
             {_id : this._id},
             {$set: {cart:updatedCart}}

@@ -16,12 +16,12 @@ app.use(bodyParser.urlencoded({
 }))
 app.use((req,res,next)=>{
     userModel.findById('603a525572f96706984b4eea').then((user)=>{
+        console.log('user details',user)
         req.user = new User(user.userName,user.email,user._id,user.cart)
+        next()
     }).catch(error => {
         
     })
-
-
     // let userName ='Sanchari'
     // let email = 'sancharii@gmail.com'
     // const User = new userModel(userName, email)
@@ -30,7 +30,6 @@ app.use((req,res,next)=>{
     // }).catch(err => {
     //     console.log('error occurred while creating user')
     // })
-    next()
 })
 app.use('/admin',adminRoute)
 app.use(shopRoutes)
