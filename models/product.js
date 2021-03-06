@@ -1,12 +1,15 @@
 const client = require('../utils/database')
 const mongoDb = require('mongodb')
+const { db } = require('../utils/database')
 class Product {
     constructor(title,price,description,imgUrl,id) {
+        let userId = '603a525572f96706984b4eea'
         this.title = title
         this.price = price
         this.description = description
         this.imgUrl = imgUrl
         this._id = id ? new mongoDb.ObjectId(id) : null
+        this.userId = new mongoDb.ObjectId(userId)
     }
     save(productId = null) {
         if (productId) {
@@ -16,7 +19,9 @@ class Product {
                 title:this.title,
                 price:this.price,
                 description:this.description,
-                imgUrl:this.imgUrl
+                imgUrl:this.imgUrl,
+               
+
             }}.next()
             ).then((result) => {
                 return result;
@@ -30,7 +35,8 @@ class Product {
                 title: this.title,
                 proce:this.price,
                 description:this.description,
-                imgUrl:this.imgUrl
+                imgUrl:this.imgUrl,
+                userId:this.userId
             })
                 .then(result => {
                     console.log('result', result)
@@ -71,6 +77,12 @@ class Product {
             console.log('deleted')
         }).catch(error => {
             console.log('error occurred while deleting',error)
+        })
+    }
+
+    static findById(productId) {
+        return client.db('shop').collection('products').findOne({
+            _id:new mongoDb.ObjectId(productId)
         })
     }
 }

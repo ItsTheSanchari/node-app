@@ -11,6 +11,7 @@ exports.getAddProductPage = (req, res, next) => {
     })
 }
 exports.addProduct = (req, res, next) => {
+    
     const title = req.body.title
     const imageUrl = req.body.imageUrl
     const price = req.body.price
@@ -87,76 +88,19 @@ exports.removeProduct = (req, res, next) => {
     })
    
 }
-// exports.addProductToCart = (req, res, next) => {
-//     let productId = req.body.productId
-//     let fetchedCart;
-//     req.user.getCart().then((cart)=>{
-//         fetchedCart = cart
-//         cart.getProducts({
-//             where:{
-//                 id:productId
-//             }
-//         })
-//         .then((products) =>{
-//             let fetchedProduct;
-//             let quantity = 1;
-//           if(products.length > 0) {
-//             fetchedProduct = products[0]
-//           }
-//           if(fetchedProduct){
-//               quantity = fetchedProduct.cartItem.quantity+1
-//           }
-//             return product.findByPk(productId).then((actualproduct)=>{
-//                 return fetchedCart.addProduct(actualproduct,{
-//                     through : {
-//                         quantity:quantity
-//                     }
-//                 })
-//             })
-//             .then((data)=>{
-//                 res.status(200).redirect('/admin/cart')
-//             })
-//             .catch((err)=>{})         
-
-//           if(product) {
-
-//           }
-//         })
-//     }).catch((err) => {
-//         console.log('error while fetching a cart',err)
-//     })
-//     // res.redirect('/')
-// }
-// exports.getAllCartData = (req, res, next) => {
-//     req.user
-//     .getCart()
-//     .then(cart => {
-//       return cart
-//         .getProducts()
-//         .then(products => {
-           
-//           res.render('cart', {
-//             path: 'admin/cart',
-//             pageTitle: 'Your Cart',
-//             products: products
-//           });
-//         })
-//         .catch(err => console.log(err));
-//     })
-//     .catch(err => console.log(err));
-// }
-exports.editProduct = (req,res,next) => {
+exports.addProductToCart = (req, res, next) => {
     let productId = req.body.productId
-    Product.getProductDetails(productId).then((fetchedProduct) => {
-        console.log('fetchedProduct',fetchedProduct)
-        res.status(200).render('add-product', {
-            pageTitle: 'Edit Product',
-            path: 'admin/product-details/edit',
-            type: 'edit',
-            product:fetchedProduct
-        })
-    }).catch((err) => {
-        console.log('edit product details error',err)
+    console.log('productId',productId)
+    Product.findById(productId)
+    .then((productDetails) => {
+        console.log('products details',productDetails)
+        req.user.addToCart(productDetails)
+    })
+    .then((result) => {
+        console.log('result',result)
+    })
+    .catch(err => {
+
     })
 }
 // exports.editProductDb = (req,res,next) =>{

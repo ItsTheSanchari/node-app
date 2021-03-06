@@ -16,7 +16,7 @@ router.get('/delete/product/:productId',productController.removeProduct)
 
 //cart routes
 
-// router.post('/product-details/cart/add',productController.addProductToCart)
+router.post('/product-details/cart/add',productController.addProductToCart)
 // router.get('/cart',productController.getAllCartData)
 // router.post('/cart-delete-item',productController.removeCartProduct)
 
