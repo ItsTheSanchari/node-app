@@ -36,59 +36,66 @@ exports.getProductList = (req, res, next) => {
         console.log('error',error)
     })
 }
-// exports.getProductDetails = (req, res, next) => {
-//     let productId = req.params.productId
-//     Product.getProductDetails(productId)
-//     .then((result) => {
-//        res.status(200).render('product-details',{
-//            product:result,
-//            pageTitle:'Product details',
-//            path:'/admin/product-details'
-//        })
-//     })
-//     .catch(error => {
-//         console.log('error while getting details',error)
-//     })
+exports.getProductDetails = (req, res, next) => {
+    let productId = req.params.productId
+    Product.findById(productId)
+    .then((result) => {
+       res.status(200).render('product-details',{
+           product:result,
+           pageTitle:'Product details',
+           path:'/admin/product-details'
+       })
+    })
+    .catch(error => {
+        console.log('error while getting details',error)
+    })
   
-// }
+}
 
-// exports.editProduct = (req, res, next) => {
-//     let productId = req.body.productId
-//     Product.getProductDetails(productId).then((result)=>{
-//         console.log('result',result)
-//         res.status(200).render('add-product', {
-//                         pageTitle: 'Edit Product',
-//                         path: 'admin/product-details/edit',
-//                         type: 'edit',
-//                         product:result
-//                     })
-//     }).catch(error => {
-//         console.log('error while getting details',error)
-//     })
-// }
+exports.editProduct = (req, res, next) => {
+    let productId = req.body.productId
+    Product.findById(productId).then((result)=>{
+        console.log('result',result)
+        res.status(200).render('add-product', {
+                        pageTitle: 'Edit Product',
+                        path: 'admin/product-details/edit',
+                        type: 'edit',
+                        product:result
+                    })
+    }).catch(error => {
+        console.log('error while getting details',error)
+    })
+}
 
-// exports.editProductDb = (req, res, next) => {
-//     let _id = req.body.productId
-//     let updatedTitle = req.body.title
-//     let updatedPrice = req.body.price
-//     let updatedDescription = req.body.description
-//     let updatedImgUrl = req.body.imgUrl
-//     const product = new Product(updatedTitle,updatedPrice,updatedDescription,updatedImgUrl,_id)
-//     product.save().then(() => {
-//         res.redirect('/')
-//     }).catch(error => {
-
-//     })
-// }
-// exports.removeProduct = (req, res, next) => {
-//     let productId = req.params.productId
-//     Product.deleteById(productId).then(()=>{
-//         res.redirect('/')
-//     }).catch(error => {
-//         console.log('error occured while deleting....')
-//     })
+exports.editProductDb = (req, res, next) => {
+    let _id = req.body.productId
+    let updatedTitle = req.body.title
+    let updatedPrice = req.body.price
+    let updatedDescription = req.body.description
+    let updatedImgUrl = req.body.imgUrl
+    Product.findById(_id).then(productDetails => {
+        console.log('productDetails',productDetails)
+        productDetails.title = updatedTitle
+        productDetails.price = updatedPrice
+        productDetails.description = updatedDescription
+        productDetails.imgUrl = updatedImgUrl
+        return productDetails.save()
+    }).then((data) => {
+        console.log('updated product',data)
+        res.redirect('/')
+    }).catch(error => {
+        console.log('error',error)
+    })
+}
+exports.removeProduct = (req, res, next) => {
+    let productId = req.params.productId
+    Product.findByIdAndDelete(productId).then(()=>{
+        res.redirect('/')
+    }).catch(error => {
+        console.log('error occured while deleting....')
+    })
    
-// }
+}
 // exports.addProductToCart = (req, res, next) => {
 //     let productId = req.body.productId
 //     console.log('productId',productId)
