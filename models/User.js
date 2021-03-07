@@ -121,7 +121,7 @@ class User {
     getOrder(){
         return client.db('shop').collection('order').find({
             userId : new mongoDb.ObjectId(this._id)
-        }).next()
+        }).toArray()
     }
 
 }
