@@ -55,9 +55,9 @@ class User {
     }
     getAllCartData() {
         console.log('all data',this.cart)
-        let cartProductIds = this.cart.items.map(eachItem => {
+        let cartProductIds = this.cart && this.cart.items? this.cart.items.map(eachItem => {
             return new mongoDb.ObjectId(eachItem.productId)
-        })
+        }) : []
        console.log('ids',cartProductIds)
        return client.db('shop').collection('products').find({ _id: { $in: cartProductIds } })
        .toArray()
@@ -94,6 +94,33 @@ class User {
             {_id : this._id},
             {$set: {cart:updatedCart}}
             )
+    }
+    generateOrder() {
+        let orderItems = {
+            userId : this._id,
+            userEmail: this.email,
+            items :[]
+        }
+
+     return this.getAllCartData().then(data => {
+          return orderItems.items = data
+          
+      }).then(result => {
+          return client.db('shop').collection('order').insertOne(orderItems).then(result => {
+              return client.db('shop').collection('User').updateOne(
+                  {_id : this._id},
+                {$set: {cart:{}}
+              })
+          })
+      } ).catch( error => {
+          console.log()
+      })
+    }
+
+    getOrder(){
+        return client.db('shop').collection('order').find({
+            userId : new mongoDb.ObjectId(this._id)
+        }).next()
     }
 
 }
