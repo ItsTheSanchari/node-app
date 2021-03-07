@@ -7,20 +7,20 @@ const product = []
 
 router.get('/add-product',productController.getAddProductPage)
 router.post('/add-product',productController.addProduct)
-router.get('/product-details/:productId',productController.getProductDetails)
-router.get('/products',productController.getProductList)
-router.post('/product-details/edit',productController.editProduct)
+// router.get('/product-details/:productId',productController.getProductDetails)
+// router.get('/products',productController.getProductList)
+// router.post('/product-details/edit',productController.editProduct)
 // router.post('/product-details/edit/submit',productController.editProductDb)
 
-router.get('/delete/product/:productId',productController.removeProduct)
+// router.get('/delete/product/:productId',productController.removeProduct)
 
 //cart routes
 
-router.post('/product-details/cart/add',productController.addProductToCart)
-router.get('/cart',productController.getAllCartData)
-router.post('/cart-delete-item',productController.removeCartProduct)
+// router.post('/product-details/cart/add',productController.addProductToCart)
+// router.get('/cart',productController.getAllCartData)
+// router.post('/cart-delete-item',productController.removeCartProduct)
 
 // //order
-router.get('/orders',productController.getOrders)
-router.post('/order',productController.createOrder)
+// router.get('/orders',productController.getOrders)
+// router.post('/order',productController.createOrder)
 module.exports = router
