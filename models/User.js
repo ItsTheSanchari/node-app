@@ -35,11 +35,12 @@ class User {
         })
     }
     addToCart(product) {
-        console.log('product',product)
-        const cartProductIndex = this.cart.items.findIndex((item) => {
+        console.log('product....',product)
+        const cartProductIndex =  this.cart && this.cart.items ? this.cart.items.findIndex((item) => {
             return item.productId.toString() === product._id.toString() 
-        })
-        const updatedCartItems = [...this.cart.items]   
+        }) : -1
+        console.log('cartProductIndex',cartProductIndex)
+        const updatedCartItems = this.cart.items ? [...this.cart.items] : []  
         if(cartProductIndex > -1) {
             updatedCartItems[cartProductIndex].quantity = this.cart.items[cartProductIndex].quantity +1;
         } else {
