@@ -1,5 +1,5 @@
 const Product = require('../models/product')
-// const userModel = require('../models/User')
+const userModel = require('../models/User')
 exports.getAddProductPage = (req, res, next) => {
     res.status(200).render('add-product', {
         pageTitle: 'Add Product',
@@ -100,38 +100,35 @@ exports.removeProduct = (req, res, next) => {
     })
    
 }
-// exports.addProductToCart = (req, res, next) => {
-//     let productId = req.body.productId
-//     console.log('productId',productId)
-//     Product.findById(productId)
-//     .then((productDetails) => {
-//         console.log('products details',productDetails)
-//         req.user.addToCart(productDetails)
-//     })
-//     .then((result) => {
-//         res.redirect('/admin/cart')
-//     })
-//     .catch(err => {
-
-//     })
-// }
-// exports.getAllCartData = (req,res,next) => {
-//     req.user.getAllCartData().then(cartProducts =>{
-//         console.log('cart products',cartProducts)
-//         res.status(200).render('cart', {
-//             pageTitle: 'Cart',
-//             path: '/cart',
-//             products:cartProducts
-//         })
-//     })
-// }
-// exports.removeCartProduct = (req,res,next) => {
-//     console.log('req body',req.body.productId)
-//     req.user.removeCartProduct(req.body.productId).then(removedProduct =>{
-//         res.redirect('/admin/cart')
-//     })
+exports.addProductToCart = (req, res, next) => {
+    const prodId = req.body.productId;
+    Product.findById(prodId)
+    .then(product => {
+      return req.user.addToCart(product);
+    })
+    .then(result => {
+      console.log(result);
+      res.redirect('/admin/cart');
+    });
+}
+exports.getAllCartData = (req,res,next) => {
+    req.user.populate('cart.items.productId')
+    .execPopulate()
+    .then(user =>{
+        res.status(200).render('cart', {
+            pageTitle: 'Cart',
+            path: '/cart',
+            products:user.cart.items
+        })
+    })
+}
+exports.removeCartProduct = (req,res,next) => {
+    console.log('req body',req.body.productId)
+    req.user.removeCartProduct(req.body.productId).then(removedProduct =>{
+        res.redirect('/admin/cart')
+    })
     
-// }
+}
 
 // exports.createOrder = (req,res,next) => {
 //     req.user.generateOrder().then(result =>{
