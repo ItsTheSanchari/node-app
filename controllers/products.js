@@ -17,7 +17,8 @@ exports.addProduct = (req, res, next) => {
         title :title,
         price:price,
         description:description,
-        imageUrl:imageUrl
+        imageUrl:imageUrl,
+        userId:req.user._id
         }).save().then((result) => {
         console.log('product created',result)
         res.redirect('/')
@@ -39,7 +40,10 @@ exports.getProductList = (req, res, next) => {
 exports.getProductDetails = (req, res, next) => {
     let productId = req.params.productId
     Product.findById(productId)
+    // .select('title price')
+    .populate('userId','name -_id')
     .then((result) => {
+        console.log('fetched product',result)
        res.status(200).render('product-details',{
            product:result,
            pageTitle:'Product details',

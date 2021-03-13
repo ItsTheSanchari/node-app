@@ -5,6 +5,7 @@ const path = require('path');
 const mongoose = require('mongoose')
 const adminRoute = require('./routes/admin')
 const shopRoutes = require('./routes/shop')
+const unhandled = require('./routes/unhandled')
 
 const User = require('./models/User');
 const { error } = require('console');
@@ -15,9 +16,18 @@ app.set('views','views')
 app.use(bodyParser.urlencoded({
     extended : false
 }))
+app.use((req,res,next)=>{
+    User.findById('6044d53aeacb704978a51c4f').then((user)=>{
+        console.log('user details',user)
+        req.user = user
+        next()
+    }).catch(error => {
+        
+    })
+})
 app.use('/admin',adminRoute)
 app.use(shopRoutes)
-// app.use(unhandled)
+app.use(unhandled)
 mongoose.connect('mongodb+srv://thesanchari:sanchari1234@cluster0.r5sgi.mongodb.net/<test>?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true})
 .then(result => {
     // const user = new User({
