@@ -130,21 +130,22 @@ exports.removeCartProduct = (req,res,next) => {
     
 }
 
-// exports.createOrder = (req,res,next) => {
-//     req.user.generateOrder().then(result =>{
-//         res.redirect('/admin/orders')
-//     }).catch(error => {
-//         console.log('error while creating an order',error)
-//     })
-// }
+exports.createOrder = (req,res,next) => {
+    req.user.generateOrder().then(result =>{
+        console.log('result',result)
+        // res.redirect('/admin/orders')
+    }).catch(error => {
+        console.log('error while creating an order',error)
+    })
+}
 
-// exports.getOrders = (req,res,next) => {
-//     req.user.getOrder().then(order => {
-//         console.log('order details',order)
-//         res.status(200).render('order',{
-//             pageTitle: 'Order',
-//             path: '/admin/orders',
-//             orders:order
-//         })
-//     })
-// }
+exports.getOrders = (req,res,next) => {
+    req.user.getOrder().then(order => {
+        console.log('order details',order)
+        // res.status(200).render('order',{
+        //     pageTitle: 'Order',
+        //     path: '/admin/orders',
+        //     orders:order
+        // })
+    })
+}

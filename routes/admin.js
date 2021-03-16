@@ -21,7 +21,7 @@ router.get('/cart',productController.getAllCartData)
 router.post('/cart-delete-item',productController.removeCartProduct)
 
 // //order
-// router.get('/orders',productController.getOrders)
-// router.post('/order',productController.createOrder)
+router.get('/orders',productController.getOrders)
+router.post('/order',productController.createOrder)
 module.exports = router
 
