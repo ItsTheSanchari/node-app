@@ -59,8 +59,14 @@ UserSchema.methods.removeCartProduct = function(productId) {
         this.cart = updatedCart
         return this.save()
 }
-
-UserSchema.methods.generateOrder = function() {
+UserSchema.methods.clearCart = function() {
+  let cart = {
+    items:[]
+  }
+  this.cart = cart;
+  return this.save()
+}
+UserSchema.methods.getOrder = function() {
     return this.cart.items
 }
 // save() {

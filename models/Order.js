@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 const OrderSchema = new Schema({
     products : [ 
         {
-            product:{type: Schema.Types.ObjectId,ref:'Product',required:true},
+            product:{type: Object,required:true},
             quantity:{type:Number,required:true}
         }    
                 
@@ -22,4 +22,7 @@ const OrderSchema = new Schema({
     }
 
 }) 
+OrderSchema.methods.generateOrder = function (productDetails) {
+    console.log('productDetails',productDetails)
+}
 module.exports = mongoose.model('Order',OrderSchema)

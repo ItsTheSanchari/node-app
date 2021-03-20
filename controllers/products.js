@@ -1,3 +1,5 @@
+const Order = require('../models/Order')
+const OrderModel = require('../models/Order')
 const Product = require('../models/product')
 const userModel = require('../models/User')
 exports.getAddProductPage = (req, res, next) => {
@@ -131,21 +133,57 @@ exports.removeCartProduct = (req,res,next) => {
 }
 
 exports.createOrder = (req,res,next) => {
-    req.user.generateOrder().then(result =>{
-        console.log('result',result)
-        // res.redirect('/admin/orders')
+    req.user.populate('cart.items.productId').execPopulate().then(user =>{
+        console.log('result',user.cart)
+        const products = user.cart.items.map(eachItem => {
+            return {product:{...eachItem.productId._doc},quantity:eachItem.quantity}
+        })
+        const Order = new OrderModel({
+            user : {
+                name: req.user.name,
+                userId: req.user
+            },
+            products: products
+        })
+        return Order.save()
+        
+    }).then((Order)=>{
+       return req.user.clearCart()
+        
+    }).then(() => {
+        res.redirect('/admin/orders')
     }).catch(error => {
         console.log('error while creating an order',error)
     })
 }
 
 exports.getOrders = (req,res,next) => {
-    req.user.getOrder().then(order => {
-        console.log('order details',order)
-        // res.status(200).render('order',{
-        //     pageTitle: 'Order',
-        //     path: '/admin/orders',
-        //     orders:order
+    OrderModel.find({
+        'user.userId':req.user._id
+    }).then((orderDetalis) => {
+        console.log('orderDetails',orderDetalis)
+        // orderDetalis.map(eachDetails => {
+        //     eachDetails.products.map(eachProduct => {
+        //         console.log('eachproduct',eachProduct)
+        //         console.log('details',eachDetails)
+        //         return {
+        //             product: {...eachProduct},
+        //             quan
+        //         }
+        //         // return {
+        //         //     orderId:eachDetails._id,
+        //         //     quantity: 
+        //         // }
+        //     })
         // })
+        res.status(200).render('order',{
+            pageTitle: 'Order',
+            path: '/admin/orders',
+            orders:orderDetalis
+        })
     })
+    // req.user.getOrder().then(order => {
+    //     console.log('order details',order)
+    //     
+    // })
 }
