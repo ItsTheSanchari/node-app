@@ -7,7 +7,7 @@ exports.getAddProductPage = (req, res, next) => {
         pageTitle: 'Add Product',
         path: 'admin/add-product',
         type:'add',
-        isLoggedIn:req.isLoggedIn
+        isLoggedIn:req.session.isLoggedIn
     })
 }
 exports.addProduct = (req, res, next) => {
@@ -35,7 +35,7 @@ exports.getProductList = (req, res, next) => {
             products:products,
             pageTitle:'Shopping Page',
             path:'/',
-            isLoggedIn:req.isLoggedIn
+            isLoggedIn:req.session.isLoggedIn
         })
     }).catch(error => {
         console.log('error',error)
@@ -51,7 +51,8 @@ exports.getProductDetails = (req, res, next) => {
        res.status(200).render('product-details',{
            product:result,
            pageTitle:'Product details',
-           path:'/admin/product-details'
+           path:'/admin/product-details',
+           isLoggedIn:req.session.isLoggedIn
        })
     })
     .catch(error => {
@@ -122,7 +123,8 @@ exports.getAllCartData = (req,res,next) => {
         res.status(200).render('cart', {
             pageTitle: 'Cart',
             path: '/cart',
-            products:user.cart.items
+            products:user.cart.items,
+            isLoggedIn : req.session.isLoggedIn
         })
     })
 }

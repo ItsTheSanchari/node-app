@@ -22,7 +22,7 @@
                 </div>
                 <div class="card__actions">
                     <a href="admin/product-details/<%=prod._id%>">Details</a>
-                    <a href="admin/delete/product/<%=prod._id%>">Delete</a>
+                    <%if(isLoggedIn) {%><a href="admin/delete/product/<%=prod._id%>">Delete</a><%}%>
 
                 </div>
             </article>
