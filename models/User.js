@@ -22,6 +22,10 @@ const UserSchema = new Schema({
         quantity: { type: Number, required: true }
       }
     ]
+  },
+  password: {
+    type: String,
+    required:true
   }
 });
 UserSchema.methods.addToCart = function(product) {
