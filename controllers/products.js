@@ -6,7 +6,8 @@ exports.getAddProductPage = (req, res, next) => {
     res.status(200).render('add-product', {
         pageTitle: 'Add Product',
         path: 'admin/add-product',
-        type:'add'
+        type:'add',
+        isLoggedIn:req.isLoggedIn
     })
 }
 exports.addProduct = (req, res, next) => {
@@ -33,7 +34,8 @@ exports.getProductList = (req, res, next) => {
         res.status(200).render('shop',{
             products:products,
             pageTitle:'Shopping Page',
-            path:'/'
+            path:'/',
+            isLoggedIn:req.isLoggedIn
         })
     }).catch(error => {
         console.log('error',error)
