@@ -1,7 +1,11 @@
 const Order = require('../models/Order')
 const OrderModel = require('../models/Order')
 const Product = require('../models/product')
+const User = require('../models/User')
 const userModel = require('../models/User')
+exports.getLoggedInUser = (req,res,next) => {
+    return User.findById(req.session.user.id)
+}
 exports.getAddProductPage = (req, res, next) => {
     res.status(200).render('add-product', {
         pageTitle: 'Add Product',
@@ -21,7 +25,7 @@ exports.addProduct = (req, res, next) => {
         price:price,
         description:description,
         imageUrl:imageUrl,
-        userId:req.user._id
+        userId:req.session.user._id
         }).save().then((result) => {
         console.log('product created',result)
         res.redirect('/')
@@ -107,53 +111,66 @@ exports.removeProduct = (req, res, next) => {
 }
 exports.addProductToCart = (req, res, next) => {
     const prodId = req.body.productId;
+    let productDetails = null
     Product.findById(prodId)
     .then(product => {
-      return req.user.addToCart(product);
+        productDetails = product
+        return User.findById(req.session.user._id)
     })
-    .then(result => {
-      console.log(result);
-      res.redirect('/admin/cart');
-    });
+    .then(user => {
+        return user.addToCart(productDetails)
+    })
+    .then((data)=>{
+        res.redirect('/admin/cart');
+    })
 }
 exports.getAllCartData = (req,res,next) => {
-    req.user.populate('cart.items.productId')
-    .execPopulate()
-    .then(user =>{
-        res.status(200).render('cart', {
+    User.findById(req.session.user._id).then((userFound)=>{
+        userFound.populate('cart.items.productId')
+        .execPopulate()
+        .then(user =>{
+            res.status(200).render('cart', {
             pageTitle: 'Cart',
             path: '/cart',
             products:user.cart.items,
             isLoggedIn : req.session.isLoggedIn
         })
     })
+    })
+    
 }
 exports.removeCartProduct = (req,res,next) => {
     console.log('req body',req.body.productId)
-    req.user.removeCartProduct(req.body.productId).then(removedProduct =>{
-        res.redirect('/admin/cart')
+    User.findById(req.session.user._id).then((user) => {
+        user.removeCartProduct(req.body.productId).then(removedProduct =>{
+            res.redirect('/admin/cart')
+        })
+    }).catch((err)=>{
+        console.log('err',err)
     })
     
 }
 
 exports.createOrder = (req,res,next) => {
-    req.user.populate('cart.items.productId').execPopulate().then(user =>{
-        console.log('result',user.cart)
-        const products = user.cart.items.map(eachItem => {
-            return {product:{...eachItem.productId._doc},quantity:eachItem.quantity}
+    let UserDetails = null
+    User.findById(req.session.user._id).then((user)=> {
+        UserDetails = user
+        UserDetails.populate('cart.items.productId').execPopulate().then((user) =>{
+            console.log('result',UserDetails.cart)
+            const products = UserDetails.cart.items.map(eachItem => {
+                return {product:{...eachItem.productId._doc},quantity:eachItem.quantity}
+            })
+            const Order = new OrderModel({
+                user : {
+                    name: req.user.name,
+                    userId: req.user
+                },
+                products: products
+            })
+            return Order.save()
         })
-        const Order = new OrderModel({
-            user : {
-                name: req.user.name,
-                userId: req.user
-            },
-            products: products
-        })
-        return Order.save()
-        
     }).then((Order)=>{
-       return req.user.clearCart()
-        
+       return UserDetails.clearCart()
     }).then(() => {
         res.redirect('/admin/orders')
     }).catch(error => {
@@ -163,7 +180,7 @@ exports.createOrder = (req,res,next) => {
 
 exports.getOrders = (req,res,next) => {
     OrderModel.find({
-        'user.userId':req.user._id
+        'user.userId':req.session.user._id
     }).then((orderDetalis) => {
         console.log('orderDetails',orderDetalis)
         // orderDetalis.map(eachDetails => {
@@ -183,7 +200,8 @@ exports.getOrders = (req,res,next) => {
         res.status(200).render('order',{
             pageTitle: 'Order',
             path: '/admin/orders',
-            orders:orderDetalis
+            orders:orderDetalis,
+            isLoggedIn:req.session.isLoggedIn
         })
     })
     // req.user.getOrder().then(order => {
