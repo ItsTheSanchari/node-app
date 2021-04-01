@@ -55,12 +55,36 @@ exports.getLoginPage = (req,res,next) => {
         isLoggedIn:req.session.isLoggedIn
     })
 }
-exports.signIn = (req,res,next) => {
-    req.session.user = req.user
-    req.session.isLoggedIn = true
-    req.session.save((err)=> {
-        res.redirect('/')    
-    })
+exports.signIn = (req, res, next) => {
+    const email = req.body.email
+    const pass = req.body.password
+    const saltRounds = 10;
+    let userDetails = null
+   User.findOne({
+            email: email,
+    }).then((userFound) => {
+        userDetails = userFound
+        console.log('inside',userDetails)
+        if(!userFound) {
+           return res.redirect('/')
+        } 
+        bcrypt.compare(pass, userFound.password).then((matched) => {
+          if(!matched) {
+           return res.redirect('/login')
+          } else {
+            req.user = userFound
+            req.session.user = userFound
+            req.session.isLoggedIn = true
+            return req.session.save(err => {
+                console.log('err while login',err)
+                return res.redirect('/')
+            })
+          }})    
+        })
+        .catch((err) => {
+
+        })
+
 }
 exports.signout = (req,res,next) => {
     req.session.destroy((err) => {

@@ -3,7 +3,4 @@ const router = express.Router()
 const path   = require('path')
 const productController = require('../controllers/products')
 
-router.get('/',(req,res,next) => {
-    
-})
 module.exports = router
