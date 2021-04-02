@@ -1,7 +1,13 @@
 const session = require("express-session")
 const User = require("../models/User")
 const bcrypt = require('bcrypt')
-
+const nodeMailer = require('nodemailer')
+const sendgridTransport = require('nodemailer-sendgrid-transport')
+const transporter = nodeMailer.createTransport(sendgridTransport({
+   auth: {
+    api_key:'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'
+   }
+}))
 exports.signup = (req,res,next) => {
     let message = req.flash('error');
     if (message.length > 0) {
@@ -43,6 +49,13 @@ exports.createUser = (req,res,next) => {
                  return req.session.save()
             }).then(() => {
                 res.redirect('/')
+                return transporter.sendMail( {
+                    to:email,
+                    from:'sanchari678@gmail.com',
+                    subject:'Successful Signup',
+                    html:'<h1>You have successfully siggned up!!</h1>'
+                })
+               
             }).catch((err)=> {
                 console.log('error while signing up',err)
             })

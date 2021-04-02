@@ -12,6 +12,14 @@ const authRoutes = require('./routes/auth')
 const flash = require('connect-flash');
 // const csrf = require('csurf');
 
+const nodeMailer = require('nodemailer')
+const sendgridTransport = require('nodemailer-sendgrid-transport')
+const transport = nodeMailer.createTransport(sendgridTransport({
+   auth: {
+    api_key:'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'
+   }
+}))
+
 //model
 const User = require('./models/User');
 const { error } = require('console');
