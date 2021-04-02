@@ -87,6 +87,7 @@ exports.signIn = (req, res, next) => {
 
 }
 exports.signout = (req,res,next) => {
+    console.log(req.body)
     req.session.destroy((err) => {
         console.log('error while destroying an event')
         res.redirect('/')

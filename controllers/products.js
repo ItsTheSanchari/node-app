@@ -39,7 +39,8 @@ exports.getProductList = (req, res, next) => {
             products:products,
             pageTitle:'Shopping Page',
             path:'/',
-            isLoggedIn:req.session.isLoggedIn
+            // isLoggedIn:req.session.isLoggedIn,
+            // csrfToken : req.csrfToken()
         })
     }).catch(error => {
         console.log('error',error)
@@ -162,8 +163,8 @@ exports.createOrder = (req,res,next) => {
             })
             const Order = new OrderModel({
                 user : {
-                    name: req.user.name,
-                    userId: req.user
+                    name: req.session.user.name,
+                    userId: req.session.user._id
                 },
                 products: products
             })

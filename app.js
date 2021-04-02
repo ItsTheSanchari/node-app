@@ -10,6 +10,8 @@ const shopRoutes = require('./routes/shop')
 const unhandled = require('./routes/unhandled')
 const authRoutes = require('./routes/auth')
 
+// const csrf = require('csurf');
+
 //model
 const User = require('./models/User');
 const { error } = require('console');
@@ -19,18 +21,37 @@ const store = mongoDbStore({
     uri: URI,
     collection : 'session'
 })
+// const csrfProtection = csrf();
 app.set('view engine','ejs')
 app.use(express.static(path.join(__dirname,'public')))
 app.set('views','views')
-app.use(session({
-    secret : 'my-secret',
-    resave:false,
-    saveUninitialized:false,
-    store:store
-}))
+app.use(
+    session({
+      secret: 'my secret',
+      resave: false,
+      saveUninitialized: false,
+      store: store
+    })
+  );
+
+// app.use(csrfProtection);
+
+
+
+
 app.use(bodyParser.urlencoded({
     extended : false
 }))
+
+app.use((req,res,next)=> {
+    // let token = req.csrfToken();
+    // // res.header('XSRF-TOKEN', token);
+    res.locals.isLoggedIn = req.session.isLoggedIn
+    // res.locals.csrfToken = req.csrfToken();
+    // res.cookie('XSRF-TOKEN', req.csrfToken());
+    // // console.log('body',req.body)
+    next()
+})
 app.use('/admin',adminRoute)
 app.use(shopRoutes)
 app.use(authRoutes)
