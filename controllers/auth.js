@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const session = require("express-session")
 const User = require("../models/User")
 const bcrypt = require('bcrypt')
@@ -5,7 +6,7 @@ const nodeMailer = require('nodemailer')
 const sendgridTransport = require('nodemailer-sendgrid-transport')
 const transporter = nodeMailer.createTransport(sendgridTransport({
    auth: {
-    api_key:'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'
+    api_key:''
    }
 }))
 exports.signup = (req,res,next) => {
@@ -116,11 +117,48 @@ exports.signIn = (req, res, next) => {
 
 }
 exports.getPasswordResetPage = (req,res,next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
     res.render('auth/reset-pass',{
         path:'/reset',
         pageTitle :'Reset Password Page',
         isLoggedIn:false,
-        errorMessage: null
+        errorMessage: message
+    })
+}
+exports.resetPassword = (req,res,next) => {
+    const email = req.body.email
+    crypto.randomBytes(32,(err,buffer)=> {
+        if(err) {
+            console.log('error while resetting password',err)
+            res.redirect('/reset')
+        }
+        const token = buffer.toString('hex')
+        User.findOne({
+            email :email
+        }).then((userFound) => {
+            if(!userFound) {
+                req.flash('error', 'No account found with this email address.');
+                res.redirect('/reset')
+            }
+            userFound.resetToken = token
+            userFound.resetTokenExpiration = Date.now() + 600000
+            return userFound.save()
+        }).then((updatedDetails)=>{
+            req.flash('success','Please check your mail')
+            return transporter.sendMail({
+                to:email,
+                from:'sanchari678@gmail.com',
+                subject:'Password Reset',
+                html:`'<p>Click this link<a href="http://localhost:3000/reset/${token}"> to change your password</p>'`
+            })
+        }).catch(err => {
+            console.log('error while password reset',err)
+        })
     })
 }
 exports.signout = (req,res,next) => {
