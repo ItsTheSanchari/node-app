@@ -8,7 +8,7 @@
    <%- include('../includes/navigation.ejs') %>
 
     <main>
-        <form class="login-form" action="/login" method="POST">
+        <form class="login-form" action="/reset" method="POST">
             <% if (errorMessage) { %>
                 <div class="user-message user-message--error"><%= errorMessage %></div>
             <% } %>
@@ -16,15 +16,7 @@
                 <label for="email">E-Mail</label>
                 <input type="email" name="email" id="email">
             </div>
-            <div class="form-control">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password">
-            </div>
-            <button class="btn" type="submit">Login</button>
-            <div class="form-control">
-                <a href="/reset">Forgot Password?</a>
-            </div>
-            
+            <button class="btn" type="submit">Send</button>
         </form>
     </main>
 <%- include('../includes/end.ejs') %>

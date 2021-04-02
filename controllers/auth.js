@@ -77,7 +77,7 @@ exports.getLoginPage = (req,res,next) => {
       }
     res.render('auth/login',{
         path:'/login',
-        pageTitle :'Login Pgae',
+        pageTitle :'Login Page',
         isLoggedIn:req.session.isLoggedIn,
         errorMessage: message
     })
@@ -114,6 +114,14 @@ exports.signIn = (req, res, next) => {
 
         })
 
+}
+exports.getPasswordResetPage = (req,res,next) => {
+    res.render('auth/reset-pass',{
+        path:'/reset',
+        pageTitle :'Reset Password Page',
+        isLoggedIn:false,
+        errorMessage: null
+    })
 }
 exports.signout = (req,res,next) => {
     console.log(req.body)
