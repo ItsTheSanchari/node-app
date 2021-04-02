@@ -147,10 +147,11 @@ exports.resetPassword = (req,res,next) => {
                 res.redirect('/reset')
             }
             userFound.resetToken = token
-            userFound.resetTokenExpiration = Date.now() + 600000
+            userFound.resetTokenExpiration = Date.now() + 3600000
             return userFound.save()
         }).then((updatedDetails)=>{
             req.flash('success','Please check your mail')
+            res.redirect('/')
             return transporter.sendMail({
                 to:email,
                 from:'sanchari678@gmail.com',
@@ -160,6 +161,60 @@ exports.resetPassword = (req,res,next) => {
         }).catch(err => {
             console.log('error while password reset',err)
         })
+    })
+}
+exports.getNewPassaCreatePage = (req,res,next)=>{
+    const token = req.params.token
+    let userDetails = null
+    User.findOne({
+        resetToken:token,
+        resetTokenExpiration:{$gt:Date.now()}
+    }).then((userFound) => {
+        if(!userFound) {
+            res.redirect('/')
+        }
+        userDetails = userFound
+        let message = req.flash('error');
+        if (message.length > 0) {
+            message = message[0];
+          } else {
+            message = null;
+          }
+        res.render('auth/password-generate',{
+            path:'/Change-password',
+            pageTitle :'Change Password Page',
+            isLoggedIn:false,
+            errorMessage: message,
+            userId :userDetails._id.toString(),
+            passToken:token
+        })
+    }).catch((err)=> {
+
+    })
+}
+exports.resetPasswordDb = (req,res,next) => {
+    const saltRounds = 10;
+    const pass = req.body.password
+    let userDetails = null
+    console.log('req.body',req.body)
+    User.findOne({
+        _id: req.body.userId,
+        resetToken:req.body.passToken,
+        resetTokenExpiration:{$gt:Date.now()}
+    }).then((userFound)=> {
+        if(!userFound) {
+            res.redirect('/login')
+        }
+        userDetails = userFound
+        return bcrypt.hash(pass, saltRounds).then(function(hashedPass) {
+            userDetails.password = hashedPass
+            userDetails.resetToken = ''
+            return userDetails.save()
+        })
+    }).then((updatedUser) => {
+        res.redirect('/login')
+    }).catch((err)=> {
+        console.log('err while updating password',err)
     })
 }
 exports.signout = (req,res,next) => {
