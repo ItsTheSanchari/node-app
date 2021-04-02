@@ -1,11 +1,12 @@
 const session = require("express-session")
 const User = require("../models/User")
 const bcrypt = require('bcrypt')
+const API_KEY = require('../secretKeys')
 const nodeMailer = require('nodemailer')
 const sendgridTransport = require('nodemailer-sendgrid-transport')
 const transporter = nodeMailer.createTransport(sendgridTransport({
    auth: {
-    api_key:'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'
+    api_key:API_KEY
    }
 }))
 exports.signup = (req,res,next) => {
@@ -53,7 +54,7 @@ exports.createUser = (req,res,next) => {
                     to:email,
                     from:'sanchari678@gmail.com',
                     subject:'Successful Signup',
-                    html:'<h1>You have successfully siggned up!!</h1>'
+                    html:'<h1>You have successfully signed up!!</h1>'
                 })
                
             }).catch((err)=> {
