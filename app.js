@@ -9,7 +9,7 @@ const adminRoute = require('./routes/admin')
 const shopRoutes = require('./routes/shop')
 const unhandled = require('./routes/unhandled')
 const authRoutes = require('./routes/auth')
-
+const flash = require('connect-flash');
 // const csrf = require('csurf');
 
 //model
@@ -38,6 +38,7 @@ app.use(
 
 
 
+app.use(flash())
 
 app.use(bodyParser.urlencoded({
     extended : false

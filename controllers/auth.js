@@ -3,10 +3,17 @@ const User = require("../models/User")
 const bcrypt = require('bcrypt')
 
 exports.signup = (req,res,next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
     res.render('auth/signup',{
         path:'/signup',
-        pageTitle :'Signup Pgae',
-        isLoggedIn:false
+        pageTitle :'Signup Page',
+        isLoggedIn:false,
+        errorMessage: message
     })
 }
 exports.createUser = (req,res,next) => {
@@ -49,10 +56,17 @@ exports.createUser = (req,res,next) => {
     
 }
 exports.getLoginPage = (req,res,next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
     res.render('auth/login',{
         path:'/login',
         pageTitle :'Login Pgae',
-        isLoggedIn:req.session.isLoggedIn
+        isLoggedIn:req.session.isLoggedIn,
+        errorMessage: message
     })
 }
 exports.signIn = (req, res, next) => {
@@ -66,10 +80,12 @@ exports.signIn = (req, res, next) => {
         userDetails = userFound
         console.log('inside',userDetails)
         if(!userFound) {
+            req.flash('error', 'Invalid email or password.');
            return res.redirect('/')
         } 
         bcrypt.compare(pass, userFound.password).then((matched) => {
           if(!matched) {
+            req.flash('error', 'Invalid email or password.');
            return res.redirect('/login')
           } else {
             req.user = userFound

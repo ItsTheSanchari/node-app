@@ -156,24 +156,28 @@ exports.createOrder = (req,res,next) => {
     let UserDetails = null
     User.findById(req.session.user._id).then((user)=> {
         UserDetails = user
+        console.log('userDetails',UserDetails)
         UserDetails.populate('cart.items.productId').execPopulate().then((user) =>{
             console.log('result',UserDetails.cart)
-            const products = UserDetails.cart.items.map(eachItem => {
+            let products = UserDetails.cart.items.map(eachItem => {
+                console.log('eachItem',eachItem.productId._doc)
                 return {product:{...eachItem.productId._doc},quantity:eachItem.quantity}
             })
+            console.log('products',products)
             const Order = new OrderModel({
                 user : {
                     name: req.session.user.name,
                     userId: req.session.user._id
                 },
-                products: products
+                products: [...products]
             })
             return Order.save()
         })
     }).then((Order)=>{
-       return UserDetails.clearCart()
+        console.log('created order',Order)
+    //    return UserDetails.clearCart()
     }).then(() => {
-        res.redirect('/admin/orders')
+        return res.redirect('/admin/orders')
     }).catch(error => {
         console.log('error while creating an order',error)
     })
@@ -184,20 +188,18 @@ exports.getOrders = (req,res,next) => {
         'user.userId':req.session.user._id
     }).then((orderDetalis) => {
         console.log('orderDetails',orderDetalis)
-        // orderDetalis.map(eachDetails => {
-        //     eachDetails.products.map(eachProduct => {
-        //         console.log('eachproduct',eachProduct)
-        //         console.log('details',eachDetails)
-        //         return {
-        //             product: {...eachProduct},
-        //             quan
-        //         }
-        //         // return {
-        //         //     orderId:eachDetails._id,
-        //         //     quantity: 
-        //         // }
-        //     })
-        // })
+        orderDetalis.map(eachDetails => {
+            eachDetails.products.map(eachProduct => {
+                return {
+                    product: {...eachProduct},
+                    quantity:eachProduct.quantity
+                }
+                // return {
+                //     orderId:eachDetails._id,
+                //     quantity: 
+                // }
+            })
+        })
         res.status(200).render('order',{
             pageTitle: 'Order',
             path: '/admin/orders',
