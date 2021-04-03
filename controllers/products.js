@@ -111,7 +111,10 @@ exports.editProductDb = (req, res, next) => {
 }
 exports.removeProduct = (req, res, next) => {
     let productId = req.params.productId
-    Product.findByIdAndDelete(productId).then(()=>{
+    Product.deleteOne({
+        _id:productId,
+        userId:req.session.user._id        
+    }).then((deletedProduct)=>{
         res.redirect('/')
     }).catch(error => {
         console.log('error occured while deleting....')
