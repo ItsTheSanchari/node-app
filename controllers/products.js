@@ -17,21 +17,22 @@ exports.getAddProductPage = (req, res, next) => {
 exports.addProduct = (req, res, next) => {
     
     const title = req.body.title
-    const imageUrl = req.body.imageUrl
+    const imageUrl = req.file
     const price = req.body.price
     const description = req.body.description
-    const product = new Product({
-        title :title,
-        price:price,
-        description:description,
-        imageUrl:imageUrl,
-        userId:req.session.user._id
-        }).save().then((result) => {
-        console.log('product created',result)
-        res.redirect('/')
-    }).catch(error => {
-        console.log('error',error)
-    })
+    console.log('imageUrl',req.file)
+    // const product = new Product({
+    //     title :title,
+    //     price:price,
+    //     description:description,
+    //     imageUrl:imageUrl,
+    //     userId:req.session.user._id
+    //     }).save().then((result) => {
+    //     console.log('product created',result)
+    //     res.redirect('/')
+    // }).catch(error => {
+    //     console.log('error',error)
+    // })
 }
 exports.getProductList = (req, res, next) => {
     Product.find().then(products => {

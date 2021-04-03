@@ -36,8 +36,18 @@ app.use(
 
 // app.use(csrfProtection);
 
+const filterStorage = multer.diskStorage({
+    destination:(req,file,cb) => {
+        cb(null,'images') //first arg -> error msg,second -> folder name,
+    },
+    filename: (req,file,cb) => {
+        cb(null,Date.now()+ '-' +file.originalname) //originalname ->so that we end with the extension 
+    }
+})
 
-app.use(multer().single(imageUrl))
+app.use(multer({
+    storage:filterStorage
+}).single('imageUrl'))
 app.use(flash())
 
 app.use(bodyParser.urlencoded({
