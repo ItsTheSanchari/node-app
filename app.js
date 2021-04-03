@@ -10,6 +10,7 @@ const shopRoutes = require('./routes/shop')
 const unhandled = require('./routes/unhandled')
 const authRoutes = require('./routes/auth')
 const flash = require('connect-flash');
+const multer = require('multer')
 // const csrf = require('csurf');
 //model
 const User = require('./models/User');
@@ -36,7 +37,7 @@ app.use(
 // app.use(csrfProtection);
 
 
-
+app.use(multer().single(imageUrl))
 app.use(flash())
 
 app.use(bodyParser.urlencoded({
