@@ -24,6 +24,7 @@ const store = mongoDbStore({
 // const csrfProtection = csrf();
 app.set('view engine','ejs')
 app.use(express.static(path.join(__dirname,'public')))
+app.use('/images',express.static(path.join(__dirname,'images')))
 app.set('views','views')
 app.use(
     session({
@@ -45,7 +46,6 @@ const filterStorage = multer.diskStorage({
     }
 })
 const  fileFilter = (req, file, cb) =>{
- 
     if(file.mimetype == 'image/png' || file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg' ) {
         cb(null, true)
     } else {

@@ -20,19 +20,26 @@ exports.addProduct = (req, res, next) => {
     const imageUrl = req.file
     const price = req.body.price
     const description = req.body.description
-    console.log('imageUrl',req.file)
-    // const product = new Product({
-    //     title :title,
-    //     price:price,
-    //     description:description,
-    //     imageUrl:imageUrl,
-    //     userId:req.session.user._id
-    //     }).save().then((result) => {
-    //     console.log('product created',result)
-    //     res.redirect('/')
-    // }).catch(error => {
-    //     console.log('error',error)
-    // })
+    if(!imageUrl) {
+        res.status(422).render('add-product', {
+            pageTitle: 'Add Product',
+            path: 'admin/add-product',
+            type:'add',
+            isLoggedIn:req.session.isLoggedIn
+        })
+    }
+    const product = new Product({
+        title :title,
+        price:price,
+        description:description,
+        imageUrl:imageUrl.path,
+        userId:req.session.user._id
+        }).save().then((result) => {
+        console.log('product created',result)
+        res.redirect('/')
+    }).catch(error => {
+        console.log('error',error)
+    })
 }
 exports.getProductList = (req, res, next) => {
     Product.find().then(products => {
@@ -95,13 +102,13 @@ exports.editProductDb = (req, res, next) => {
     let updatedTitle = req.body.title
     let updatedPrice = req.body.price
     let updatedDescription = req.body.description
-    let updatedImgUrl = req.body.imgUrl
+    let updatedImgUrl = req.file
     Product.findById(_id).then(productDetails => {
         console.log('productDetails',productDetails)
         productDetails.title = updatedTitle
         productDetails.price = updatedPrice
         productDetails.description = updatedDescription
-        productDetails.imgUrl = updatedImgUrl
+        productDetails.imgUrl = updatedImgUrl ? updatedImgUrl : productDetails.imgUrl
         return productDetails.save()
     }).then((data) => {
         console.log('updated product',data)
