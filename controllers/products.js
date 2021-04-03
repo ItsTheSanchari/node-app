@@ -219,7 +219,7 @@ exports.getOrders = (req,res,next) => {
                 // }
             })
         })
-        res.status(200).render('order',{
+        return res.status(200).render('order',{
             pageTitle: 'Order',
             path: '/admin/orders',
             orders:orderDetalis,
