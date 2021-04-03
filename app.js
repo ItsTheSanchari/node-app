@@ -44,9 +44,18 @@ const filterStorage = multer.diskStorage({
         cb(null,Date.now()+ '-' +file.originalname) //originalname ->so that we end with the extension 
     }
 })
-
+const  fileFilter = (req, file, cb) =>{
+ 
+    if(file.mimetype == 'image/png' || file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg' ) {
+        cb(null, true)
+    } else {
+        cb(null, false)
+    }
+    
+  }
 app.use(multer({
-    storage:filterStorage
+    storage:filterStorage,
+    fileFilter:fileFilter
 }).single('imageUrl'))
 app.use(flash())
 
