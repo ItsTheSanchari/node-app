@@ -35,10 +35,18 @@ exports.addProduct = (req, res, next) => {
 }
 exports.getProductList = (req, res, next) => {
     Product.find().then(products => {
+        products.map((eachProduct)=>{
+            if(eachProduct.userId.toString() == req.session.user._id.toString()) {
+                eachProduct.isEditable = true
+            } else {
+                eachProduct.isEditable = false
+            }
+        })
         res.status(200).render('shop',{
             products:products,
             pageTitle:'Shopping Page',
             path:'/',
+            auth:req.session.user._id.toString()
             // isLoggedIn:req.session.isLoggedIn,
             // csrfToken : req.csrfToken()
         })
