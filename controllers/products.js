@@ -3,6 +3,10 @@ const OrderModel = require('../models/Order')
 const Product = require('../models/product')
 const User = require('../models/User')
 const userModel = require('../models/User')
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path')
+const fileHelper = require('../utils/file')
 exports.getLoggedInUser = (req,res,next) => {
     return User.findById(req.session.user.id)
 }
@@ -108,6 +112,9 @@ exports.editProductDb = (req, res, next) => {
         productDetails.title = updatedTitle
         productDetails.price = updatedPrice
         productDetails.description = updatedDescription
+        if(updatedImgUrl) {
+            fileHelper.deleteFile(productDetails.imgUrl)
+        }
         productDetails.imgUrl = updatedImgUrl ? updatedImgUrl : productDetails.imgUrl
         return productDetails.save()
     }).then((data) => {
@@ -230,4 +237,40 @@ exports.getOrders = (req,res,next) => {
     //     console.log('order details',order)
     //     
     // })
+}
+exports.downloadPdf = (req,res,next) => {
+    const orderId = req.params.orderId
+    OrderModel.findById(orderId).then((orderDetails) => {
+        const invoiceName = 'invoice_'+ Date.now() +'_'+ orderId +'.pdf'
+        const invoicePath = path.join('data','invoices',invoiceName)
+        const doc = new PDFDocument();
+        res.setHeader('content-type','application/pdf')
+        res.setHeader('content-Disposition','inline;filename="'+ invoiceName +'"')
+        doc.pipe(fs.createWriteStream(invoicePath))
+        doc.pipe(res)
+        doc.fontSize(26).text('Invoice', {
+            underline: true
+          });
+          doc.text('-----------------------');
+          let totalPrice = 0;
+          orderDetails.products.forEach(prod => {
+            totalPrice += prod.quantity * prod.product.price;
+            doc
+              .fontSize(14)
+              .text(
+                prod.product.title +
+                  ' - ' +
+                  prod.quantity +
+                  ' x ' +
+                  'Rs' +
+                  prod.product.price
+              );
+          });
+          doc.text('---');
+          doc.fontSize(20).text('Total Price: rs' + totalPrice);
+    
+          doc.end();
+    }).catch((err)=>{
+
+    })
 }

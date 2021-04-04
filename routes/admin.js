@@ -21,7 +21,9 @@ router.get('/cart',authMiddleWare,productController.getAllCartData)
 router.post('/cart-delete-item',authMiddleWare,productController.removeCartProduct)
 
 // //order
+
 router.get('/orders',authMiddleWare,productController.getOrders)
 router.post('/order',authMiddleWare,productController.createOrder)
+router.get('/order/:orderId',authMiddleWare,productController.downloadPdf)
 module.exports = router
 
