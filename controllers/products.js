@@ -113,9 +113,9 @@ exports.editProductDb = (req, res, next) => {
         productDetails.price = updatedPrice
         productDetails.description = updatedDescription
         if(updatedImgUrl) {
-            fileHelper.deleteFile(productDetails.imgUrl)
+            fileHelper.deleteFile(productDetails.imageUrl)
         }
-        productDetails.imgUrl = updatedImgUrl ? updatedImgUrl : productDetails.imgUrl
+        productDetails.imageUrl = updatedImgUrl ? updatedImgUrl : productDetails.imageUrl
         return productDetails.save()
     }).then((data) => {
         console.log('updated product',data)
@@ -126,14 +126,26 @@ exports.editProductDb = (req, res, next) => {
 }
 exports.removeProduct = (req, res, next) => {
     let productId = req.params.productId
-    Product.deleteOne({
-        _id:productId,
-        userId:req.session.user._id        
-    }).then((deletedProduct)=>{
+    Product.findById(productId).then((productFound)=>{
+        if(productFound) {
+            console.log('productfound',productFound)
+            fileHelper.deleteFile(productFound.imageUrl)
+            return Product.deleteOne({
+                _id:productId,
+                userId:req.session.user._id        
+            })
+            .then((deletedProduct)=>{
+                
+            }).catch(error => {
+                
+            })
+        }
+    }).then(()=>{
         res.redirect('/')
-    }).catch(error => {
-        console.log('error occured while deleting....')
+    }).catch((err)=>{
+        console.log('error occured while deleting....',err)
     })
+    
    
 }
 exports.addProductToCart = (req, res, next) => {
